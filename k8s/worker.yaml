@@ -54,16 +54,6 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
-          readinessProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - "import os, redis, pymongo; redis.from_url(os.getenv('REDIS_URL')).ping(); pymongo.MongoClient(os.getenv('MONGO_URI'), serverSelectionTimeoutMS=3000).admin.command('ping')"
-            initialDelaySeconds: 10
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 3
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
