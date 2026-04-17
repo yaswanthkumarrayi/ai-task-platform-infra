@@ -1,0 +1,45 @@
+---
+# Ingress — requires nginx ingress controller installed
+# For k3s: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-platform-ingress
+  namespace: ai-platform
+  labels:
+    app.kubernetes.io/part-of: ai-task-platform
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "3"
+    # TLS redirect (enable once cert-manager is configured)
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ai-platform.local   # replace with your actual domain
+      http:
+        paths:
+          # API routes → backend
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 5000
+          # All other routes → frontend
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 3000
+  # Uncomment and configure once you have a TLS certificate via cert-manager
+  # tls:
+  #   - hosts:
+  #       - ai-platform.local
+  #     secretName: ai-platform-tls

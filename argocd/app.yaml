@@ -1,0 +1,52 @@
+---
+# Argo CD Application manifest
+# Apply this AFTER installing Argo CD:
+#   kubectl create namespace argocd
+#   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+#
+# Then apply this file:
+#   kubectl apply -f infra/argocd/app.yaml
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-task-platform
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: ai-task-platform
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io   # cascade delete on app removal
+spec:
+  project: default
+
+  source:
+    # ── CHANGE THIS to your actual infra repository URL ──
+    repoURL: https://github.com/yaswanthkumarrayi/ai-task-platform-infra.git
+    targetRevision: main
+    path: k8s   # folder inside the repo with all manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ai-platform
+
+  syncPolicy:
+    automated:
+      prune: true      # remove resources no longer in Git
+      selfHeal: true   # revert manual kubectl changes
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Health check ignorance for known drifts
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas   # allow HPA to manage replicas without triggering sync
