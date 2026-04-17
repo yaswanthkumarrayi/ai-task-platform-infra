@@ -13,7 +13,7 @@ data:
   RATE_LIMIT_WINDOW_MS: "900000"
   RATE_LIMIT_MAX: "100"
   TRUST_PROXY: "true"
-  FRONTEND_URLS: "http://ai-platform.local"
+  FRONTEND_URLS: "http://ai-platform.local,https://ai-task-platform-oaxz.vercel.app"
 
   # Shared non-sensitive queue config
   REDIS_QUEUE_NAME: "ai-tasks"
