@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 30   # allow current job to finish
       containers:
         - name: worker
-          image: DOCKER_USERNAME/ai-task-worker:latest   # replaced by CI/CD
+          image: yaswanth2007/ai-task-worker:latest
           imagePullPolicy: Always
           envFrom:
             - configMapRef:

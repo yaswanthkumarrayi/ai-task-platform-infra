@@ -32,7 +32,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: backend
-          image: DOCKER_USERNAME/ai-task-backend:latest   # replaced by CI/CD
+          image: yaswanth2007/ai-task-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

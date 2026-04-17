@@ -29,7 +29,7 @@ spec:
         runAsGroup: 1001
       containers:
         - name: frontend
-          image: DOCKER_USERNAME/ai-task-frontend:latest   # replaced by CI/CD
+          image: yaswanth2007/ai-task-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
